@@ -1,0 +1,456 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  background: #050505;
+  color: #f5f5f5;
+  font-family: 'DM Mono', monospace;
+}
+
+body {
+  min-height: 100vh;
+}
+
+main {
+  min-height: 100vh;
+  padding: 30px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(80px, 18vw, 280px);
+  line-height: 0.8;
+  letter-spacing: -0.08em;
+  font-weight: 500;
+}
+
+p {
+  margin-top: 40px;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  color: #888;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #333;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  color: #aaa;
+  text-decoration: none;
+  font-size: 11px;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: white;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 75vh;
+}
+
+.hero-label {
+  margin-bottom: 50px;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.hero-description {
+  margin-top: 45px;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+.sculpture-container {
+  width: 100%;
+  height: 450px;
+  margin: 30px auto;
+  cursor: grab;
+}
+
+.sculpture-container canvas {
+  display: block;
+}
+.artists-section {
+  padding: 100px 0;
+  border-top: 1px solid #333;
+}
+
+.section-header,
+.section-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #888;
+}
+
+.artist-card {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 60px 10px;
+  border-bottom: 1px solid #333;
+  transition: background 0.3s;
+}
+
+.artist-card:hover {
+  background: #151515;
+}
+
+.artist-number {
+  font-size: 12px;
+  color: #888;
+}
+
+.artist-info {
+  flex: 1;
+}
+
+.artist-info h2 {
+  margin: 0;
+  font-size: clamp(48px, 9vw, 130px);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 1;
+}
+
+.artist-info p {
+  margin-top: 15px;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.artist-arrow {
+  font-size: 36px;
+}
+
+.section-footer {
+  padding-top: 30px;
+}
+.releases-section {
+  padding: 100px 0;
+  border-top: 1px solid #333;
+}
+
+.releases-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 50px;
+}
+
+.release-artwork {
+  aspect-ratio: 1;
+  background: #171717;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+.release-artwork span {
+  font-size: clamp(24px, 5vw, 80px);
+  letter-spacing: -0.07em;
+  color: #555;
+}
+
+.release-card:hover .release-artwork {
+  background: #292929;
+}
+
+.release-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.release-details h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.release-details span {
+  font-size: 11px;
+  color: #888;
+}
+
+@media (max-width: 600px) {
+  .releases-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.projects-section {
+  padding: 100px 0;
+  border-top: 1px solid #333;
+}
+
+.project-row {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  padding: 45px 10px;
+  border-bottom: 1px solid #333;
+  transition: background 0.3s, padding 0.3s;
+}
+
+.project-row:first-of-type {
+  margin-top: 40px;
+}
+
+.project-row:hover {
+  background: #151515;
+  padding-left: 25px;
+}
+
+.project-number {
+  font-size: 12px;
+  color: #888;
+}
+
+.project-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.project-info h2 {
+  margin: 0;
+  font-size: clamp(24px, 4vw, 65px);
+  font-weight: 500;
+  letter-spacing: -0.06em;
+  line-height: 1.1;
+}
+
+.project-info p {
+  margin-top: 12px;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.project-arrow {
+  font-size: 28px;
+}
+
+@media (max-width: 600px) {
+  .project-row {
+    gap: 12px;
+    padding: 30px 5px;
+  }
+
+  .project-info h2 {
+    font-size: 25px;
+  }
+}
+.about-section,
+.contact-section {
+  padding: 100px 0;
+  border-top: 1px solid #333;
+}
+
+.about-content {
+  max-width: 1100px;
+  margin-top: 80px;
+}
+
+.about-content h2 {
+  margin: 0;
+  font-size: clamp(36px, 6vw, 90px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.06em;
+}
+
+.about-content p {
+  max-width: 550px;
+  margin-top: 50px;
+  color: #999;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.contact-content {
+  padding: 100px 0 150px;
+}
+
+.contact-content p {
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.contact-email {
+  display: inline-block;
+  margin-top: 30px;
+  color: white;
+  font-size: clamp(40px, 8vw, 120px);
+  letter-spacing: -0.07em;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+.contact-email:hover {
+  opacity: 0.5;
+}
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding-top: 30px;
+  border-top: 1px solid #333;
+  color: #888;
+  font-size: 11px;
+}
+
+.site-footer a {
+  color: #888;
+  text-decoration: none;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #ffffff;
+  color: #050505;
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+section {
+  scroll-margin-top: 30px;
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition:
+    opacity 0.9s ease,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+/* PROXXY HERO */
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 85vh;
+  padding: 35px 0;
+}
+
+.hero-top,
+.hero-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #999;
+}
+
+.hero-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 550px;
+  isolation: isolate;
+}
+
+.hero-stage h1 {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+  font-size: clamp(65px, 17vw, 300px);
+  line-height: 1;
+  letter-spacing: -0.09em;
+  pointer-events: none;
+}
+
+.hero-stage .sculpture-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .hero-stage {
+    min-height: 400px;
+  }
+
+  .hero-stage h1 {
+    font-size: 17vw;
+  }
+
+  .hero-top,
+  .hero-bottom {
+    font-size: 9px;
+  }
+}
+.artist-card {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.artist-card:hover .artist-arrow {
+  transform: translate(5px, -5px);
+}
+
+.artist-arrow {
+  transition: transform 0.3s ease;
+}
