@@ -1027,3 +1027,23 @@ section {
   .hero-letter-motion { transform: none; transition: none; }
   .hero-letter-face { animation: none; }
 }
+
+.hero-stage h1.hero-wordmark--static {
+  font-size: clamp(48px, 14vw, 240px);
+  line-height: 1.2;
+  letter-spacing: -0.055em;
+  padding: 0.08em 0;
+  transform: none;
+  transition: none;
+  animation: none;
+  color: #eef3f6;
+  text-shadow: 0 0 18px rgba(185, 211, 229, 0.22);
+}
+
+.camera-mirror-controls { position: absolute; bottom: 52px; left: 0; z-index: 3; display: flex; flex-direction: column; gap: 9px; max-width: min(300px, 80%); }
+.camera-mirror-controls button { align-self: flex-start; border: 1px solid #67727c; background: rgba(9, 12, 15, 0.82); color: #e3ecf2; font: inherit; font-size: 10px; letter-spacing: 0.1em; padding: 12px 16px; cursor: pointer; }
+.camera-mirror-controls button:hover { background: #202830; border-color: #d3e3ef; }
+.camera-mirror-controls button:focus-visible { outline: 2px solid #d3e3ef; outline-offset: 4px; }
+.camera-mirror-controls button:disabled { opacity: 0.6; cursor: progress; }
+.camera-mirror-controls > span { color: #929ea7; font-size: 8px; letter-spacing: 0.07em; }
+.camera-mirror-controls p { margin: 0; font-size: 10px; line-height: 1.5; color: #becbd5; }

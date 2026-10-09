@@ -113,7 +113,7 @@ function machinedFinish() {
       const groove = Math.pow(Math.max(0, 1 - Math.abs(Math.sin(phase)) * 9), 2)
       const glint = Math.pow(Math.max(0, 1 - Math.abs(Math.sin(phase + 0.18)) * 12), 2)
       const brushing = Math.sin(v * Math.PI * 2 * 96) * 0.035 + noise * 0.035
-      const shade = 0.64 + Math.sin((u + v) * Math.PI * 2) * 0.12 + brushing - groove * 0.26 + glint * 0.17
+      const shade = Math.min(0.96, 0.82 + Math.sin((u + v) * Math.PI * 2) * 0.085 + brushing * 0.6 - groove * 0.19 + glint * 0.09)
       const i = (y * size + x) * 4
       color.set([shade * 228, shade * 240, shade * 250, 255], i)
       const height = Math.max(0, Math.min(255, 155 - groove * 45 + noise * 2.5))
@@ -229,7 +229,7 @@ export default function ChromeWordmark({ reduced, progress }: { reduced: boolean
           </lineSegments>
         </mesh>
         <mesh geometry={face} ref={(node) => { upperFaces.current[i] = node }} renderOrder={101 + i * 4}>
-          <meshPhysicalMaterial color="#d6e2e9" map={finish.map} bumpMap={finish.bump} bumpScale={0.004} roughnessMap={finish.roughness} metalness={0.78} roughness={0.7}
+          <meshPhysicalMaterial color="#f0f3f2" emissive="#b9d3e5" emissiveIntensity={0.24} map={finish.map} bumpMap={finish.bump} bumpScale={0.004} roughnessMap={finish.roughness} metalness={0.5} roughness={0.7}
             clearcoat={0.25} polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} clippingPlanes={[upperPlane]} />
 
           <mesh geometry={fasteners} renderOrder={102 + i * 4}>
@@ -241,7 +241,7 @@ export default function ChromeWordmark({ reduced, progress }: { reduced: boolean
 
         </mesh>
         <mesh geometry={face} ref={(node) => { lowerFaces.current[i] = node }} renderOrder={101 + i * 4}>
-          <meshPhysicalMaterial color="#9faebb" map={finish.map} bumpMap={finish.bump} bumpScale={0.004} roughnessMap={finish.roughness} metalness={0.85} roughness={0.6}
+          <meshPhysicalMaterial color="#d4dee4" emissive="#a9c8e0" emissiveIntensity={0.2} map={finish.map} bumpMap={finish.bump} bumpScale={0.004} roughnessMap={finish.roughness} metalness={0.6} roughness={0.6}
             clearcoat={0.35} polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} clippingPlanes={[lowerPlane]} />
 
           <mesh geometry={fasteners} renderOrder={102 + i * 4}>

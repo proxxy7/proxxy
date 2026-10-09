@@ -48,7 +48,7 @@ function App() {
       <Proxxy3D />
     </div>
 
-    <h1 className="sr-only">PROXXY</h1>
+    <h1 className="hero-wordmark hero-wordmark--static">PROXXY</h1>
     <span className="hero-stage-note" aria-hidden="true">SWISH / DRAG + THROW / SCROLL TO ENTER</span>
   </div>
 

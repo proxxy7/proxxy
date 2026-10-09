@@ -1,8 +1,8 @@
-import ChromeWordmark from './ChromeWordmark'
+import useCameraMirror from './useCameraMirror'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Environment } from '@react-three/drei'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { MeshPhysicalMaterial, Plane, Raycaster, Vector2, Vector3, SphereGeometry, TorusGeometry, TorusKnotGeometry } from 'three'
+import { BackSide, MeshPhysicalMaterial, Plane, Raycaster, Vector2, Vector3, SphereGeometry, TorusGeometry, TorusKnotGeometry } from 'three'
 import type { Mesh } from 'three'
 import { MarchingCubes } from 'three/examples/jsm/objects/MarchingCubes.js'
 
@@ -345,6 +345,7 @@ function FlyThroughCamera({ reduced, scatter }: SculptureProps) {
 }
 
 export default function Proxxy3D() {
+  const mirror = useCameraMirror()
   const [reduced, setReduced] = useState(false)
   const scatter = useRef(0)
   const water = useRef<WaterInput>({ x: 0, y: 0, active: false, dragging: false, grab: 0, release: 0 })
@@ -352,12 +353,14 @@ export default function Proxxy3D() {
     const stage = document.querySelector<HTMLElement>('.hero-stage')
     if (!stage) return
     const move = (event: PointerEvent) => {
+      if (event.target instanceof Element && event.target.closest('.camera-mirror-controls')) return
       const bounds = stage.getBoundingClientRect()
       water.current.x = (event.clientX - bounds.left) / bounds.width * 2 - 1
       water.current.y = 1 - (event.clientY - bounds.top) / bounds.height * 2
       water.current.active = true
     }
     const down = (event: PointerEvent) => {
+      if (event.target instanceof Element && event.target.closest('.camera-mirror-controls')) return
       if (event.button !== 0) return
       move(event)
       water.current.dragging = true
@@ -415,15 +418,31 @@ export default function Proxxy3D() {
     return () => query.removeEventListener('change', update)
   }, [])
   return (
+    <>
     <Canvas onCreated={({ gl }) => { gl.localClippingEnabled = true }} camera={{ position: [0, 0, 7.4], fov: 50, near: 0.035, far: 100 }} dpr={1} aria-label="A liquid chrome sculpture surrounded by four floating chrome forms around the PROXXY lettering">
       <ambientLight intensity={0.6} />
       <directionalLight position={[4, 5, 3]} intensity={3} />
       <pointLight position={[-3, -1, 2]} intensity={8} color="#ffffff" />
-      <Environment preset="city" />
+      {mirror.texture ? (
+        <Environment frames={Infinity} resolution={256}>
+          <mesh>
+            <boxGeometry args={[20, 20, 20]} />
+            <meshBasicMaterial map={mirror.texture} side={BackSide} toneMapped={false} />
+          </mesh>
+        </Environment>
+      ) : <Environment preset="city" />}
       <Sculpture reduced={reduced} scatter={scatter} water={water} />
       <SurroundingSculptures reduced={reduced} scatter={scatter} />
-      <ChromeWordmark reduced={reduced} progress={scatter} />
       <FlyThroughCamera reduced={reduced} scatter={scatter} />
     </Canvas>
+    <div className="camera-mirror-controls">
+      <button type="button" disabled={mirror.pending} aria-pressed={Boolean(mirror.texture)}
+        onClick={mirror.texture ? mirror.disable : () => { void mirror.enable() }}>
+        {mirror.pending ? 'STARTING CAMERA…' : mirror.texture ? 'TURN MIRROR OFF ↗' : 'CAMERA MIRROR ↗'}
+      </button>
+      <span>{mirror.texture ? 'LIVE / CAMERA STAYS ON YOUR DEVICE' : 'REFLECT YOURSELF IN THE CHROME'}</span>
+      {mirror.error && <p role="status">{mirror.error}</p>}
+    </div>
+    </>
   )
 }
