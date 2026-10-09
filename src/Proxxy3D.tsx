@@ -415,7 +415,7 @@ export default function Proxxy3D() {
     return () => query.removeEventListener('change', update)
   }, [])
   return (
-    <Canvas camera={{ position: [0, 0, 7.4], fov: 50, near: 0.035, far: 100 }} dpr={1} aria-label="A liquid chrome sculpture surrounded by four floating chrome forms around the PROXXY lettering">
+    <Canvas onCreated={({ gl }) => { gl.localClippingEnabled = true }} camera={{ position: [0, 0, 7.4], fov: 50, near: 0.035, far: 100 }} dpr={1} aria-label="A liquid chrome sculpture surrounded by four floating chrome forms around the PROXXY lettering">
       <ambientLight intensity={0.6} />
       <directionalLight position={[4, 5, 3]} intensity={3} />
       <pointLight position={[-3, -1, 2]} intensity={8} color="#ffffff" />
