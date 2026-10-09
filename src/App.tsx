@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Proxxy3D from './Proxxy3D'
+import Releases from './Releases'
 function App() {
     useEffect(() => {
     const sections = document.querySelectorAll('.reveal')
@@ -40,12 +42,16 @@ function App() {
     <span>EST. 2026 — WORLDWIDE</span>
   </div>
 
+  <div className="hero-journey">
   <div className="hero-stage">
     <div className="sculpture-container">
       <Proxxy3D />
     </div>
 
-    <h1>PROXXY</h1>
+    <h1 className="sr-only">PROXXY</h1>
+    <span className="hero-stage-note" aria-hidden="true">SWISH / DRAG + THROW / SCROLL TO ENTER</span>
+  </div>
+
   </div>
 
   <div className="hero-bottom">
@@ -59,50 +65,19 @@ function App() {
     <span>SELECTED ARTISTS ↘</span>
   </div>
 
-  <a href="/artists/25ohms" className="artist-card">
+  <Link to="/artists/25ohms" className="artist-card">
     <div className="artist-number">001</div>
 
     <div className="artist-info">
-      <h2>25OHMS</h2>
+      <h2 className="ohms-wordmark" aria-label="25OHMS"><span>25</span><span className="ohms-suffix">OHMS</span></h2>
       <p>ELECTRONIC / EXPERIMENTAL / SOUND DESIGN</p>
     </div>
 
     <div className="artist-arrow">↗</div>
-  </a>
+  </Link>
 
-  <div className="section-footer">
-    <span>INDEPENDENT SOUND / NEW FREQUENCIES</span>
-    <span>PROXXY © 2026</span>
-  </div>
 </section>
-    <section className="releases-section reveal" id="releases">
-  <div className="section-header">
-    <span>02 / DISCOGRAPHY</span>
-    <span>SELECTED RELEASES ↘</span>
-  </div>
-
-  <div className="releases-grid">
-    <div className="release-card">
-      <div className="release-artwork">
-        <span>PX—001</span>
-      </div>
-      <div className="release-details">
-        <h3>UNTITLED 001</h3>
-        <span>25OHMS / 2026</span>
-      </div>
-    </div>
-
-    <div className="release-card">
-      <div className="release-artwork">
-        <span>PX—002</span>
-      </div>
-      <div className="release-details">
-        <h3>UNTITLED 002</h3>
-        <span>COMING SOON</span>
-      </div>
-    </div>
-  </div>
-</section>
+    <Releases />
     <section className="projects-section reveal" id="projects">
   <div className="section-header">
     <span>03 / PROJECTS</span>
