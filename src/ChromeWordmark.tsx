@@ -1,6 +1,6 @@
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
-import { BoxGeometry, BufferGeometry, DataTexture, EdgesGeometry, ExtrudeGeometry, Float32BufferAttribute, LinearMipmapLinearFilter, RepeatWrapping, RGBAFormat, SRGBColorSpace, Path, Plane, Shape, TorusGeometry, Vector3 } from 'three'
+import { BoxGeometry, BufferGeometry, DataTexture, EdgesGeometry, ExtrudeGeometry, Float32BufferAttribute, LinearMipmapLinearFilter, RepeatWrapping, RGBAFormat, SRGBColorSpace, Path, Plane, Shape, ShapeGeometry, TorusGeometry, Vector3 } from 'three'
 import type { Group, Mesh } from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 
@@ -116,7 +116,7 @@ function machinedFinish() {
       const shade = 0.64 + Math.sin((u + v) * Math.PI * 2) * 0.12 + brushing - groove * 0.26 + glint * 0.17
       const i = (y * size + x) * 4
       color.set([shade * 228, shade * 240, shade * 250, 255], i)
-      const height = Math.max(0, Math.min(255, 155 - groove * 90 + noise * 12))
+      const height = Math.max(0, Math.min(255, 155 - groove * 45 + noise * 2.5))
       relief.set([height, height, height, 255], i)
       const rough = 135 + noise * 28 + groove * 55 - glint * 40
       roughness.set([rough, rough, rough, 255], i)
@@ -125,6 +125,7 @@ function machinedFinish() {
   const make = (data: Uint8Array) => {
     const texture = new DataTexture(data, size, size, RGBAFormat)
     texture.wrapS = texture.wrapT = RepeatWrapping
+    texture.anisotropy = 4
     texture.generateMipmaps = true
     texture.minFilter = LinearMipmapLinearFilter
     texture.needsUpdate = true
@@ -158,17 +159,24 @@ export default function ChromeWordmark({ reduced, progress }: { reduced: boolean
       cursor += width + 0.18
       const origin = geometry.boundingBox!.getCenter(new Vector3())
       const details = faceDetails(shape, origin)
+      // Faceplates are single planar surfaces. Duplicating the entire beveled
+      // shell for each half caused coincident side surfaces and unstable edges.
+      const face = new ShapeGeometry(shape, 24)
+      const faceUV = face.getAttribute('uv')
+      for (let i = 0; i < faceUV.count; i++) faceUV.setXY(i, faceUV.getX(i) / 1.1 + index * 0.17, faceUV.getY(i) / 1.3)
+      face.scale(0.88, 1.08, 1)
+      face.translate(-origin.x, -origin.y, 0.105)
       geometry.center()
       const edges = new EdgesGeometry(geometry, 35)
       const slope = letter === 'X' ? -0.2 : 0.14
-      return { geometry, edges, ...details, center,
+      return { geometry, face, edges, ...details, center,
         upperPlane: new Plane(new Vector3(slope, 1, 0).normalize(), -0.018),
         lowerPlane: new Plane(new Vector3(-slope, -1, 0).normalize(), -0.018), slope }
     })
     const total = cursor - 0.18
     return { forms: result.map((form) => ({ ...form, center: form.center - total / 2 })), total }
   }, [])
-  useEffect(() => () => letters.forms.forEach(({ geometry, edges, marks, fasteners }) => { geometry.dispose(); edges.dispose(); marks.dispose(); fasteners.dispose() }), [letters])
+  useEffect(() => () => letters.forms.forEach(({ geometry, face, edges, marks, fasteners }) => { geometry.dispose(); face.dispose(); edges.dispose(); marks.dispose(); fasteners.dispose() }), [letters])
 
   useFrame(({ pointer, size }, delta) => {
     const viewHeight = 2 * Math.tan(25 * Math.PI / 180) * 7.4
@@ -209,43 +217,40 @@ export default function ChromeWordmark({ reduced, progress }: { reduced: boolean
   })
 
   return <group>
-    {letters.forms.map(({ geometry, edges, marks, fasteners, upperPlane, lowerPlane }, i) => (
+    {letters.forms.map(({ geometry, face, edges, marks, fasteners, upperPlane, lowerPlane }, i) => (
       <group key={i} ref={(node) => { meshes.current[i] = node }}>
         {/* A dark continuous chassis sits behind two independently moving face
             plates. Depth resets once so liquid cannot cover the wordmark. */}
         <mesh geometry={geometry} position={[0, 0, -0.035]} renderOrder={100 + i * 4}
           onBeforeRender={i === 0 ? (renderer) => renderer.clearDepth() : undefined}>
           <meshPhysicalMaterial color="#303a43" metalness={0.85} roughness={0.32} />
+          <lineSegments geometry={edges} renderOrder={102 + i * 4}>
+            <lineBasicMaterial color="#c0ccd5" transparent opacity={0.25} depthWrite={false} />
+          </lineSegments>
         </mesh>
-        <mesh geometry={geometry} ref={(node) => { upperFaces.current[i] = node }} renderOrder={101 + i * 4}>
-          <meshPhysicalMaterial attach="material-0" color="#d6e2e9" map={finish.map} bumpMap={finish.bump} bumpScale={0.018} roughnessMap={finish.roughness} metalness={0.78} roughness={0.7}
-            clearcoat={0.25} clippingPlanes={[upperPlane]} />
-          <meshPhysicalMaterial attach="material-1" color="#83909a" metalness={1} roughness={0.2}
-            clippingPlanes={[upperPlane]} />
+        <mesh geometry={face} ref={(node) => { upperFaces.current[i] = node }} renderOrder={101 + i * 4}>
+          <meshPhysicalMaterial color="#d6e2e9" map={finish.map} bumpMap={finish.bump} bumpScale={0.004} roughnessMap={finish.roughness} metalness={0.78} roughness={0.7}
+            clearcoat={0.25} polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} clippingPlanes={[upperPlane]} />
+
           <mesh geometry={fasteners} renderOrder={102 + i * 4}>
             <meshPhysicalMaterial color="#35434d" metalness={0.9} roughness={0.26} clippingPlanes={[upperPlane]} />
           </mesh>
           <lineSegments geometry={marks} renderOrder={102 + i * 4}>
             <lineBasicMaterial color="#293a46" clippingPlanes={[upperPlane]} />
           </lineSegments>
-          <lineSegments geometry={edges} renderOrder={102 + i * 4}>
-            <lineBasicMaterial color="#e1eaf0" transparent opacity={0.32} clippingPlanes={[upperPlane]} depthWrite={false} />
-          </lineSegments>
+
         </mesh>
-        <mesh geometry={geometry} ref={(node) => { lowerFaces.current[i] = node }} renderOrder={101 + i * 4}>
-          <meshPhysicalMaterial attach="material-0" color="#9faebb" map={finish.map} bumpMap={finish.bump} bumpScale={0.018} roughnessMap={finish.roughness} metalness={0.85} roughness={0.6}
-            clearcoat={0.35} clippingPlanes={[lowerPlane]} />
-          <meshPhysicalMaterial attach="material-1" color="#46525c" metalness={1} roughness={0.22}
-            clippingPlanes={[lowerPlane]} />
+        <mesh geometry={face} ref={(node) => { lowerFaces.current[i] = node }} renderOrder={101 + i * 4}>
+          <meshPhysicalMaterial color="#9faebb" map={finish.map} bumpMap={finish.bump} bumpScale={0.004} roughnessMap={finish.roughness} metalness={0.85} roughness={0.6}
+            clearcoat={0.35} polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} clippingPlanes={[lowerPlane]} />
+
           <mesh geometry={fasteners} renderOrder={102 + i * 4}>
             <meshPhysicalMaterial color="#35434d" metalness={0.9} roughness={0.26} clippingPlanes={[lowerPlane]} />
           </mesh>
           <lineSegments geometry={marks} renderOrder={102 + i * 4}>
             <lineBasicMaterial color="#293a46" clippingPlanes={[lowerPlane]} />
           </lineSegments>
-          <lineSegments geometry={edges} renderOrder={102 + i * 4}>
-            <lineBasicMaterial color="#e1eaf0" transparent opacity={0.28} clippingPlanes={[lowerPlane]} depthWrite={false} />
-          </lineSegments>
+
         </mesh>
       </group>
     ))}
